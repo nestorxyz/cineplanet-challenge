@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/AuthContext';
@@ -11,7 +11,15 @@ import type { CartItem } from '@/lib/store/slices/cartSlice';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Plus, Minus, Trash2, ShoppingBasket } from 'lucide-react';
+import {
+  Plus,
+  Minus,
+  Trash2,
+  ShoppingBasket,
+  ChevronUp,
+  ChevronDown,
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 
 const DULCERIA_SKELETON = (
@@ -66,6 +74,7 @@ export default function DulceriaPage() {
     error,
   } = useSelector((state: RootState) => state.candystore);
   const cart = useSelector((state: RootState) => state.cart);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user && !isGuest) {
@@ -82,7 +91,7 @@ export default function DulceriaPage() {
   }
 
   return (
-    <div className="container py-12 mx-auto px-4 md:px-0">
+    <div className="container py-12 pb-32 lg:pb-12 mx-auto px-4 md:px-0">
       <div className="flex flex-col lg:flex-row gap-12">
         {/* Product List */}
         <div className="flex-1 space-y-8">
@@ -157,8 +166,8 @@ export default function DulceriaPage() {
           </div>
         </div>
 
-        {/* Cart Sidebar - "RESUMEN" */}
-        <aside className="w-full lg:w-[400px]">
+        {/* Cart Sidebar - "RESUMEN" (Desktop Only) */}
+        <aside className="hidden lg:block w-[400px]">
           <div className="sticky top-28 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-3xl overflow-hidden border border-zinc-100">
             <div className="p-8 pb-4">
               <h2 className="text-3xl font-black text-zinc-900 uppercase tracking-tighter italic">
@@ -363,6 +372,236 @@ export default function DulceriaPage() {
             </CardContent>
           </div>
         </aside>
+
+        {/* Floating Cart (Mobile Only) */}
+        <div className="lg:hidden">
+          <AnimatePresence>
+            {isExpanded && (
+              <motion.div
+                initial={{ y: '100%' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100%' }}
+                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                className="fixed inset-x-0 bottom-0 z-50 bg-white shadow-[0_-20px_50px_rgba(0,0,0,0.1)] rounded-t-[32px] overflow-hidden border-t border-zinc-100 max-h-[85vh] flex flex-col"
+              >
+                <div className="p-6 pb-2 flex items-center justify-between border-b border-zinc-50">
+                  <h2 className="text-2xl font-black text-zinc-900 uppercase tracking-tighter italic">
+                    Tu Pedido
+                  </h2>
+                  <button
+                    onClick={() => setIsExpanded(false)}
+                    className="p-2 hover:bg-zinc-100 rounded-full transition-colors"
+                  >
+                    <ChevronDown className="h-6 w-6 text-zinc-400" />
+                  </button>
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
+                  {/* Entradas Section */}
+                  <div className="space-y-4">
+                    <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest block">
+                      Entradas
+                    </span>
+
+                    {cart.items.filter((i) => i.type === 'ticket').length ===
+                    0 ? (
+                      <div className="p-6 text-center bg-zinc-50 rounded-2xl border border-zinc-100 flex flex-col gap-3">
+                        <p className="text-zinc-500 text-[10px] font-medium italic leading-relaxed">
+                          ¡Aún no tienes entradas!
+                        </p>
+                      </div>
+                    ) : (
+                      cart.items
+                        .filter((i) => i.type === 'ticket')
+                        .map((item: CartItem) => (
+                          <div
+                            key={item.id}
+                            className="flex gap-4 items-center"
+                          >
+                            <div className="relative h-12 w-12 shrink-0 rounded-xl overflow-hidden border border-zinc-100">
+                              <Image
+                                src={
+                                  item.type === 'ticket'
+                                    ? item.image ||
+                                      'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=300'
+                                    : ''
+                                }
+                                alt={item.type === 'ticket' ? item.title : ''}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-black text-[10px] text-zinc-900 uppercase tracking-tight line-clamp-1">
+                                {item.type === 'ticket' ? item.title : ''}
+                              </h4>
+                              <p className="text-[10px] font-bold text-zinc-500">
+                                S/{' '}
+                                {item.type === 'ticket'
+                                  ? item.unitPrice.toFixed(2)
+                                  : ''}
+                              </p>
+                            </div>
+                            <div className="flex items-center bg-zinc-50 rounded-xl px-2 py-1 gap-2 border border-zinc-100">
+                              <button
+                                onClick={() => dispatch(removeItem(item.id))}
+                                className="text-zinc-400 p-1"
+                              >
+                                {item.quantity === 1 ? (
+                                  <Trash2 className="h-3 w-3" />
+                                ) : (
+                                  <Minus className="h-3 w-3" />
+                                )}
+                              </button>
+                              <span className="text-[10px] font-black">
+                                {item.quantity}
+                              </span>
+                              <button
+                                onClick={() =>
+                                  item.type === 'ticket' &&
+                                  dispatch(
+                                    addTicket({
+                                      premiereId: item.premiereId,
+                                      title: item.title,
+                                      image: item.image,
+                                      unitPrice: item.unitPrice,
+                                    }),
+                                  )
+                                }
+                                className="text-zinc-400 p-1"
+                              >
+                                <Plus className="h-3 w-3" />
+                              </button>
+                            </div>
+                          </div>
+                        ))
+                    )}
+                  </div>
+
+                  {/* Food Section */}
+                  <div className="space-y-4">
+                    <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest block">
+                      Alimentos y Bebidas
+                    </span>
+
+                    {cart.items.filter((i) => i.type === 'candy').length ===
+                    0 ? (
+                      <div className="p-6 text-center bg-zinc-50 rounded-2xl border border-dashed border-zinc-100">
+                        <p className="text-zinc-400 text-[10px] font-medium italic">
+                          Vacío
+                        </p>
+                      </div>
+                    ) : (
+                      cart.items
+                        .filter((i) => i.type === 'candy')
+                        .map((item: CartItem) => (
+                          <div
+                            key={item.id}
+                            className="flex gap-4 items-center"
+                          >
+                            <div className="relative h-12 w-12 shrink-0 rounded-xl overflow-hidden border border-zinc-100">
+                              <Image
+                                src={item.type === 'candy' ? item.image : ''}
+                                alt={item.type === 'candy' ? item.name : ''}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-black text-[10px] text-zinc-900 uppercase tracking-tight line-clamp-1">
+                                {item.type === 'candy' ? item.name : ''}
+                              </h4>
+                              <p className="text-[10px] font-bold text-zinc-500">
+                                S/{' '}
+                                {item.type === 'candy'
+                                  ? item.price.toFixed(2)
+                                  : ''}
+                              </p>
+                            </div>
+                            <div className="flex items-center bg-zinc-50 rounded-xl px-2 py-1 gap-2 border border-zinc-100">
+                              <button
+                                onClick={() => dispatch(removeItem(item.id))}
+                                className="text-zinc-400 p-1"
+                              >
+                                {item.quantity === 1 ? (
+                                  <Trash2 className="h-3 w-3" />
+                                ) : (
+                                  <Minus className="h-3 w-3" />
+                                )}
+                              </button>
+                              <span className="text-[10px] font-black">
+                                {item.quantity}
+                              </span>
+                              <button
+                                onClick={() =>
+                                  item.type === 'candy' &&
+                                  dispatch(addItem(item))
+                                }
+                                className="text-zinc-400 p-1"
+                              >
+                                <Plus className="h-3 w-3" />
+                              </button>
+                            </div>
+                          </div>
+                        ))
+                    )}
+                  </div>
+                </div>
+
+                <div className="p-6 bg-zinc-950">
+                  <button
+                    onClick={() => router.push('/pago')}
+                    className="w-full h-14 bg-primary text-white rounded-2xl font-black uppercase tracking-widest text-sm shadow-lg shadow-primary/20 active:scale-95 transition-all"
+                  >
+                    Confirmar Pedido S/{' '}
+                    {(cart.total + (cart.items.length > 0 ? 1 : 0)).toFixed(2)}
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Bottom Summary Bar */}
+          <div className="fixed inset-x-0 bottom-0 z-40 bg-zinc-950 p-4 pb-8 flex items-center justify-between shadow-[0_-10px_40px_rgba(0,0,0,0.3)]">
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="flex items-center gap-4 flex-1"
+            >
+              <div className="relative">
+                <ShoppingBasket className="h-6 w-6 text-primary" />
+                {cart.items.length > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-primary text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-zinc-950">
+                    {cart.items.reduce((acc, item) => acc + item.quantity, 0)}
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-col items-start">
+                <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-1">
+                  Tu Pedido{' '}
+                  {isExpanded ? (
+                    <ChevronDown className="h-3 w-3" />
+                  ) : (
+                    <ChevronUp className="h-3 w-3" />
+                  )}
+                </span>
+                <span className="text-xl font-black text-white">
+                  S/ {(cart.total + (cart.items.length > 0 ? 1 : 0)).toFixed(2)}
+                </span>
+              </div>
+            </button>
+
+            <Button
+              disabled={cart.items.length === 0}
+              onClick={(e) => {
+                e.stopPropagation();
+                router.push('/pago');
+              }}
+              className="px-8 h-12 rounded-2xl bg-white text-zinc-950 hover:bg-zinc-100 font-black uppercase tracking-widest text-xs active:scale-95 transition-all"
+            >
+              Continuar
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
