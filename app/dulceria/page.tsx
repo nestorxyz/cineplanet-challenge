@@ -233,7 +233,7 @@ export default function DulceriaPage() {
                               <div className="flex items-center bg-zinc-50 rounded-xl px-2 py-1 gap-2 border border-zinc-100">
                                 <button
                                   onClick={() => dispatch(removeItem(item.id))}
-                                  className="text-zinc-400 hover:text-red-500 transition-colors p-1"
+                                  className="text-zinc-400 cursor-pointer hover:text-red-500 transition-colors p-1"
                                 >
                                   {item.quantity === 1 ? (
                                     <Trash2 className="h-3 w-3" />
@@ -256,7 +256,7 @@ export default function DulceriaPage() {
                                       }),
                                     )
                                   }
-                                  className="text-zinc-400 hover:text-primary transition-colors p-1"
+                                  className="text-zinc-400 cursor-pointer hover:text-primary transition-colors p-1"
                                 >
                                   <Plus className="h-3 w-3" />
                                 </button>
@@ -311,7 +311,7 @@ export default function DulceriaPage() {
                               <div className="flex items-center bg-zinc-50 rounded-xl px-2 py-1 gap-2 border border-zinc-100">
                                 <button
                                   onClick={() => dispatch(removeItem(item.id))}
-                                  className="text-zinc-400 hover:text-red-500 transition-colors p-1"
+                                  className="text-zinc-400 cursor-pointer hover:text-red-500 transition-colors p-1"
                                 >
                                   {item.quantity === 1 ? (
                                     <Trash2 className="h-3 w-3" />
@@ -327,7 +327,7 @@ export default function DulceriaPage() {
                                     item.type === 'candy' &&
                                     dispatch(addItem(item))
                                   }
-                                  className="text-zinc-400 hover:text-primary transition-colors p-1"
+                                  className="text-zinc-400 cursor-pointer hover:text-primary transition-colors p-1"
                                 >
                                   <Plus className="h-3 w-3" />
                                 </button>
@@ -343,7 +343,7 @@ export default function DulceriaPage() {
               <button
                 disabled={cart.items.length === 0}
                 onClick={() => router.push('/pago')}
-                className="w-full mt-8 p-8 bg-zinc-950 text-white space-y-6 hover:bg-zinc-900 transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed group text-left"
+                className="w-full mt-8 p-8 cursor-pointer bg-zinc-950 text-white space-y-6 hover:bg-zinc-900 transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed group text-left"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
