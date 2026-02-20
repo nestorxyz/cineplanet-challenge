@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,9 +20,44 @@ export default function Home() {
     error,
   } = useSelector((state: RootState) => state.premieres);
 
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const DURATION_MS = 5000;
+  const TICK_MS = 50;
+  const carouselPremieres = premieres.slice(0, 4);
+
+  // Clamp activeIndex when carousel has fewer items
+  const safeIndex = Math.min(activeIndex, Math.max(0, carouselPremieres.length - 1));
+
   useEffect(() => {
     dispatch(fetchPremieresRequest());
   }, [dispatch]);
+
+  // Auto-advance carousel with JS-driven progress (reliable visibility)
+  useEffect(() => {
+    if (carouselPremieres.length === 0) return;
+
+    const totalTicks = DURATION_MS / TICK_MS;
+    const progressPerTick = 100 / totalTicks;
+
+    const id = setInterval(() => {
+      setProgress((prev) => {
+        const next = prev + progressPerTick;
+        if (next >= 100) {
+          setActiveIndex((i) => (i + 1) % carouselPremieres.length);
+          return 0;
+        }
+        return next;
+      });
+    }, TICK_MS);
+
+    return () => clearInterval(id);
+  }, [carouselPremieres.length, safeIndex]);
+
+  const goToSlide = (index: number) => {
+    setActiveIndex(index);
+    setProgress(0);
+  };
 
   const handleAddMovieToCart = (premiere: {
     id: string;
@@ -114,12 +149,12 @@ export default function Home() {
         ) : (
           <div className="space-y-12">
             {/* Featured Premiere */}
-            {premieres.length > 0 && (
+            {carouselPremieres.length > 0 && (
               <div className="relative flex flex-col md:flex-row gap-8 items-center bg-[#F7F7F7] rounded-3xl p-6 md:p-0 overflow-hidden">
                 <div className="relative w-full md:w-[350px] aspect-2/3 shrink-0 rounded-2xl md:rounded-l-3xl md:rounded-r-none overflow-hidden group">
                   <Image
-                    src={premieres[0].image}
-                    alt={premieres[0].title}
+                    src={carouselPremieres[safeIndex].image}
+                    alt={carouselPremieres[safeIndex].title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
@@ -130,26 +165,40 @@ export default function Home() {
                 <div className="flex-1 space-y-6 md:pr-12">
                   <div className="space-y-4">
                     <h3 className="text-4xl md:text-5xl font-black text-blue-950 tracking-tight leading-none">
-                      {premieres[0].title}
+                      {carouselPremieres[safeIndex].title}
                     </h3>
                     <p className="text-xl text-muted-foreground leading-relaxed max-w-xl">
-                      {premieres[0].description}
+                      {carouselPremieres[safeIndex].description}
                     </p>
                   </div>
                   <Button
                     size="lg"
                     className="rounded-full px-10 h-14 text-lg font-bold bg-blue-500 hover:bg-blue-600 shadow-xl hover:shadow-blue-500/20 transition-all"
-                    onClick={() => handleAddMovieToCart(premieres[0])}
+                    onClick={() => handleAddMovieToCart(carouselPremieres[safeIndex])}
                   >
                     Comprar Entradas
                   </Button>
                   <div className="flex gap-2 justify-center md:justify-start pt-4">
-                    {[1, 2, 3, 4].map((i) => (
-                      <div
-                        key={i}
-                        className={`h-2 w-2 rounded-full ${i === 1 ? 'bg-blue-500 w-4' : 'bg-gray-200'}`}
-                      />
-                    ))}
+                    {carouselPremieres.map((premiere, i) => {
+                      const isActive = i === safeIndex;
+                      const fillPct =
+                        i < safeIndex ? 100 : i === safeIndex ? progress : 0;
+                      return (
+                        <button
+                          key={premiere.id}
+                          type="button"
+                          onClick={() => goToSlide(i)}
+                          className="relative h-2.5 w-10 rounded-full bg-gray-200 overflow-hidden shrink-0 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                          aria-label={`Ir a estreno ${i + 1}`}
+                          aria-pressed={isActive}
+                        >
+                          <div
+                            className="absolute inset-y-0 left-0 bg-blue-500 rounded-full transition-[width] duration-100 ease-linear pointer-events-none"
+                            style={{ width: `${fillPct}%` }}
+                          />
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -157,7 +206,7 @@ export default function Home() {
 
             {/* Movie Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {premieres.slice(1).map((premiere) => (
+              {premieres.map((premiere) => (
                 <button
                   key={premiere.id}
                   type="button"

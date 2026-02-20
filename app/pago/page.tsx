@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/AuthContext';
@@ -55,16 +55,15 @@ export default function PagoPage() {
     }
   }, [user, isGuest, authLoading, router]);
 
-  const hasPrefilled = useRef(false);
-  useEffect(() => {
-    if (authLoading || hasPrefilled.current || (!user && !isGuest)) return;
-    hasPrefilled.current = true;
+  const [hasPrefilled, setHasPrefilled] = useState(false);
+  if (!authLoading && (user || isGuest) && !hasPrefilled) {
+    setHasPrefilled(true);
     setFormData((prev) => ({
       ...prev,
       email: user?.email ?? prev.email,
       name: (user?.displayName || guestName) ?? prev.name,
     }));
-  }, [authLoading, user, isGuest, guestName]);
+  }
 
   if (authLoading || (!user && !isGuest)) return null;
 

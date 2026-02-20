@@ -118,6 +118,19 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+@keyframes carousel-fill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.animate-carousel-fill {
+  animation: carousel-fill 5s linear forwards;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
