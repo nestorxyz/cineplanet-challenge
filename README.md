@@ -44,7 +44,7 @@ cp .env.local.example .env.local
 
 In the project directory, you can run:
 
-| Script       | description                                                                         |
+| Script       | Description                                                                         |
 | :----------- | :---------------------------------------------------------------------------------- |
 | `pnpm dev`   | Runs the app in development mode at [http://localhost:3000](http://localhost:3000). |
 | `pnpm build` | Builds the application for production for deployment.                               |
