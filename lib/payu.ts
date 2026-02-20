@@ -1,14 +1,13 @@
 import md5 from 'md5';
+import { env } from './env';
 
 // PayU Sandbox Credentials (Standard Latam)
 const PAYU_CONFIG = {
-  MERCHANT_ID: process.env.NEXT_PUBLIC_PAYU_MERCHANT_ID || '508029',
-  API_KEY: process.env.NEXT_PUBLIC_PAYU_API_KEY || '4Vj8eK4rloUd272L48hsrarnUA',
-  ACCOUNT_ID: process.env.NEXT_PUBLIC_PAYU_ACCOUNT_ID || '512323',
-  API_LOGIN: process.env.NEXT_PUBLIC_PAYU_API_LOGIN || 'pRRXKOl8ikMmt9u',
-  API_URL:
-    process.env.NEXT_PUBLIC_PAYU_API_URL ||
-    'https://sandbox.api.payulatam.com/payments-api/4.0/service.cgi',
+  MERCHANT_ID: env.PAYU_MERCHANT_ID,
+  API_KEY: env.PAYU_API_KEY,
+  ACCOUNT_ID: env.PAYU_ACCOUNT_ID,
+  API_LOGIN: env.PAYU_API_LOGIN,
+  API_URL: env.PAYU_API_URL,
 };
 
 /**
