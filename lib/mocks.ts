@@ -13,6 +13,9 @@ export interface CandyStoreProduct {
   image: string;
 }
 
+/** Price per seat (ticket) in PEN */
+export const TICKET_PRICE_PEN = 15;
+
 export const MOCK_PREMIERES: Premiere[] = [
   {
     id: '1',

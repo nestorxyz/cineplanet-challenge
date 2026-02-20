@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/AuthContext';
 import { RootState } from '@/lib/store/rootReducer';
 import { clearCart } from '@/lib/store/slices/cartSlice';
+import type { CartItem } from '@/lib/store/slices/cartSlice';
 import { processPayment } from '@/app/actions/payment';
 import { mockCompleteTransaction } from '@/lib/mocks';
 import { Button } from '@/components/ui/button';
@@ -399,13 +400,19 @@ export default function PagoPage() {
               <CardTitle className="text-xl">Resumen de Compra</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {cart.items.map((item) => (
+              {cart.items.map((item: CartItem) => (
                 <div key={item.id} className="flex justify-between text-sm">
                   <span className="text-muted-foreground">
-                    {item.quantity}x {item.name}
+                    {item.type === 'candy'
+                      ? `${item.quantity}x ${item.name}`
+                      : `${item.quantity}x Entrada - ${item.title}`}
                   </span>
                   <span className="font-medium">
-                    S/ {(item.price * item.quantity).toFixed(2)}
+                    S/{' '}
+                    {(
+                      (item.type === 'candy' ? item.price : item.unitPrice) *
+                      item.quantity
+                    ).toFixed(2)}
                   </span>
                 </div>
               ))}

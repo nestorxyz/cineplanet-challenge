@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/AuthContext';
 import { RootState } from '@/lib/store/rootReducer';
 import { fetchCandyStoreRequest } from '@/lib/store/slices/candystoreSlice';
-import { addItem, removeItem } from '@/lib/store/slices/cartSlice';
+import { addItem, addTicket, removeItem } from '@/lib/store/slices/cartSlice';
+import type { CartItem } from '@/lib/store/slices/cartSlice';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -136,17 +137,27 @@ export default function DulceriaPage() {
                     </p>
                   </div>
                 ) : (
-                  cart.items.map((item) => (
+                  cart.items.map((item: CartItem) => (
                     <div
                       key={item.id}
                       className="flex items-center gap-4 py-2 border-b border-zinc-100 last:border-0"
                     >
                       <div className="flex-1 min-w-0">
                         <p className="font-bold truncate text-zinc-800">
-                          {item.name}
+                          {item.type === 'candy'
+                            ? item.name
+                            : `Entrada - ${item.title}`}
                         </p>
                         <p className="text-sm text-blue-600 font-semibold">
-                          S/ {item.price.toFixed(2)}
+                          S/{' '}
+                          {item.type === 'candy'
+                            ? item.price.toFixed(2)
+                            : item.unitPrice.toFixed(2)}{' '}
+                          {item.type === 'ticket' && (
+                            <span className="text-muted-foreground font-normal">
+                              (por asiento)
+                            </span>
+                          )}
                         </p>
                       </div>
                       <div className="flex items-center gap-3 bg-zinc-100 rounded-full px-3 py-1">
@@ -164,7 +175,25 @@ export default function DulceriaPage() {
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() => dispatch(addItem(item))}
+                          onClick={() =>
+                            item.type === 'candy'
+                              ? dispatch(
+                                  addItem({
+                                    id: item.id,
+                                    name: item.name,
+                                    description: item.description,
+                                    price: item.price,
+                                    image: item.image,
+                                  }),
+                                )
+                              : dispatch(
+                                  addTicket({
+                                    premiereId: item.premiereId,
+                                    title: item.title,
+                                    unitPrice: item.unitPrice,
+                                  }),
+                                )
+                          }
                           className="hover:text-blue-600 transition-colors"
                         >
                           <Plus className="h-4 w-4" />

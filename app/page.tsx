@@ -2,15 +2,18 @@
 
 import { useEffect } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPremieresRequest } from '@/lib/store/slices/premieresSlice';
+import { addTicket } from '@/lib/store/slices/cartSlice';
 import { RootState } from '@/lib/store/rootReducer';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { TICKET_PRICE_PEN } from '@/lib/mocks';
 
 export default function Home() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const {
     items: premieres,
     loading,
@@ -20,6 +23,20 @@ export default function Home() {
   useEffect(() => {
     dispatch(fetchPremieresRequest());
   }, [dispatch]);
+
+  const handleAddMovieToCart = (premiere: {
+    id: string;
+    title: string;
+  }) => {
+    dispatch(
+      addTicket({
+        premiereId: premiere.id,
+        title: premiere.title,
+        unitPrice: TICKET_PRICE_PEN,
+      }),
+    );
+    router.push('/dulceria');
+  };
 
   if (error) {
     return (
@@ -114,14 +131,13 @@ export default function Home() {
                       {premieres[0].description}
                     </p>
                   </div>
-                  <Link href="/login">
-                    <Button
-                      size="lg"
-                      className="rounded-full px-10 h-14 text-lg font-bold bg-blue-500 hover:bg-blue-600 shadow-xl hover:shadow-blue-500/20 transition-all"
-                    >
-                      Comprar Entradas
-                    </Button>
-                  </Link>
+                  <Button
+                    size="lg"
+                    className="rounded-full px-10 h-14 text-lg font-bold bg-blue-500 hover:bg-blue-600 shadow-xl hover:shadow-blue-500/20 transition-all"
+                    onClick={() => handleAddMovieToCart(premieres[0])}
+                  >
+                    Comprar Entradas
+                  </Button>
                   <div className="flex gap-2 justify-center md:justify-start pt-4">
                     {[1, 2, 3, 4].map((i) => (
                       <div
@@ -137,10 +153,11 @@ export default function Home() {
             {/* Movie Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               {premieres.slice(1).map((premiere) => (
-                <Link
+                <button
                   key={premiere.id}
-                  href="/login"
-                  className="group space-y-4"
+                  type="button"
+                  onClick={() => handleAddMovieToCart(premiere)}
+                  className="group space-y-4 text-left w-full"
                 >
                   <div className="relative aspect-2/3 rounded-2xl overflow-hidden shadow-md group-hover:shadow-xl transition-all duration-300">
                     <Image
@@ -160,7 +177,7 @@ export default function Home() {
                       {premiere.title}
                     </h4>
                   </div>
-                </Link>
+                </button>
               ))}
             </div>
           </div>
