@@ -53,14 +53,14 @@ export default function Home() {
       {/* Hero Banner Section */}
       <section className="container py-6">
         <div className="relative overflow-hidden rounded-2xl bg-linear-to-r from-blue-700 to-blue-900 text-white min-h-[300px] flex items-center shadow-xl">
-          <div className="absolute right-0 top-0 h-full w-1/2 md:w-1/3 opacity-50 md:opacity-100">
+          <div className="absolute right-0 top-0 h-full w-full opacity-50 md:opacity-100">
             <div className="relative h-full w-full">
               <div className="absolute inset-0 bg-blue-900/20 z-10" />
               <Image
-                src="https://images.unsplash.com/photo-1585647347456-478377d0b4d4?q=80&w=800&auto=format&fit=crop"
+                src="/images/socio_home.png"
                 alt="Popcorn"
                 fill
-                className="object-contain object-right p-4"
+                className="object-cover object-right p-4"
               />
             </div>
           </div>

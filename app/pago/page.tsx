@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/AuthContext';
@@ -28,7 +28,7 @@ import { motion } from 'framer-motion';
 export default function PagoPage() {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { user, isGuest, loading: authLoading } = useAuth();
+  const { user, isGuest, guestName, loading: authLoading } = useAuth();
   const cart = useSelector((state: RootState) => state.cart);
 
   const [loading, setLoading] = useState(false);
@@ -37,10 +37,11 @@ export default function PagoPage() {
 
   const [paymentMethod, setPaymentMethod] = useState<'CARD' | 'YAPE'>('CARD');
   const [formData, setFormData] = useState({
+    email: '',
+    name: '',
     cardNumber: '',
     expiry: '',
     cvv: '',
-    name: '',
     dni: '',
     yapePhone: '',
     otp: '',
@@ -54,17 +55,31 @@ export default function PagoPage() {
     }
   }, [user, isGuest, authLoading, router]);
 
+  const hasPrefilled = useRef(false);
+  useEffect(() => {
+    if (authLoading || hasPrefilled.current || (!user && !isGuest)) return;
+    hasPrefilled.current = true;
+    setFormData((prev) => ({
+      ...prev,
+      email: user?.email ?? prev.email,
+      name: (user?.displayName || guestName) ?? prev.name,
+    }));
+  }, [authLoading, user, isGuest, guestName]);
+
   if (authLoading || (!user && !isGuest)) return null;
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email.trim()))
+      newErrors.email = 'Correo electrónico inválido';
+    if (!formData.name.trim()) newErrors.name = 'Requerido';
     if (paymentMethod === 'CARD') {
       if (!formData.cardNumber.match(/^\d{16}$/))
         newErrors.cardNumber = 'Deben ser 16 dígitos';
       if (!formData.expiry.match(/^(0[1-9]|1[0-2])\/\d{2}$/))
         newErrors.expiry = 'Formato MM/YY';
       if (!formData.cvv.match(/^\d{3,4}$/)) newErrors.cvv = '3 o 4 dígitos';
-      if (!formData.name.trim()) newErrors.name = 'Requerido';
     } else {
       if (!formData.yapePhone.match(/^9\d{8}$/))
         newErrors.yapePhone = 'Celular inválido (9 dígitos)';
@@ -94,8 +109,8 @@ export default function PagoPage() {
     const result = await processPayment({
       amount: cart.total,
       description: 'Compra de entradas y dulces en Cineplanet',
-      payerName: isYape ? 'YAPE USER' : formData.name,
-      payerEmail: user?.email || 'guest@cineplanet.com',
+      payerName: formData.name,
+      payerEmail: formData.email,
       payerPhone: isYape ? formData.yapePhone : '999999999',
       payerDni: formData.dni,
       paymentMethod: isYape ? 'YAPE' : 'VISA',
@@ -116,7 +131,17 @@ export default function PagoPage() {
       result.success &&
       result.data?.transactionResponse?.responseCode === 'APPROVED'
     ) {
-      await mockCompleteTransaction({ success: true });
+      const txResponse = result.data.transactionResponse as {
+        transactionId?: string;
+        operationDate?: string | number;
+      };
+      await mockCompleteTransaction({
+        email: formData.email,
+        names: formData.name,
+        dni: formData.dni,
+        operationDate: txResponse.operationDate ?? new Date().getTime(),
+        transactionId: txResponse.transactionId ?? `mock-${Date.now()}`,
+      });
       setStatus('success');
       dispatch(clearCart());
     } else {
@@ -220,6 +245,42 @@ export default function PagoPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Correo electrónico</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="tu@correo.com"
+                  className={errors.email ? 'border-red-500' : ''}
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                />
+                {errors.email && (
+                  <p className="text-xs text-red-500">{errors.email}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="name">Nombre</Label>
+                <Input
+                  id="name"
+                  placeholder="NOMBRE APELLIDO"
+                  className={errors.name ? 'border-red-500' : ''}
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      name: e.target.value.toUpperCase(),
+                    })
+                  }
+                />
+                {errors.name && (
+                  <p className="text-xs text-red-500">{errors.name}</p>
+                )}
+              </div>
+
               {paymentMethod === 'CARD' ? (
                 <>
                   <div className="space-y-2">
@@ -283,22 +344,6 @@ export default function PagoPage() {
                         }
                       />
                     </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Nombre en la tarjeta</Label>
-                    <Input
-                      id="name"
-                      placeholder="NOMBRE APELLIDO"
-                      className={errors.name ? 'border-red-500' : ''}
-                      value={formData.name}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          name: e.target.value.toUpperCase(),
-                        })
-                      }
-                    />
                   </div>
                 </>
               ) : (

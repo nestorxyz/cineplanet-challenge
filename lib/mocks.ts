@@ -154,7 +154,17 @@ export const mockGetCandyStore = async () => {
   });
 };
 
-export const mockCompleteTransaction = async (data: { success: boolean }) => {
+export interface CompleteTransactionPayload {
+  email: string;
+  names: string;
+  dni: string;
+  operationDate: string | number;
+  transactionId: string;
+}
+
+export const mockCompleteTransaction = async (
+  data: CompleteTransactionPayload,
+) => {
   console.log('Completing transaction with data:', data);
   return new Promise<{ responseCode: string }>((resolve) => {
     setTimeout(() => resolve({ responseCode: '0' }), 1000);

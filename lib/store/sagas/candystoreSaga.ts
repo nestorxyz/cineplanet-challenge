@@ -1,5 +1,6 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
-import { mockGetCandyStore, CandyStoreProduct } from '../../mocks';
+import { CandyStoreProduct } from '../../mocks';
+import { getCandyStoreCollection } from '../../services/candy-store';
 import {
   fetchCandyStoreRequest,
   fetchCandyStoreSuccess,
@@ -8,7 +9,8 @@ import {
 
 function* fetchCandyStoreSaga() {
   try {
-    const data: CandyStoreProduct[] = yield call(mockGetCandyStore);
+    const data: CandyStoreProduct[] = yield call(getCandyStoreCollection);
+
     yield put(fetchCandyStoreSuccess(data));
   } catch (error: unknown) {
     yield put(

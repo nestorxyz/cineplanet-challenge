@@ -4,11 +4,12 @@ import {
   fetchPremieresSuccess,
   fetchPremieresFailure,
 } from '../slices/premieresSlice';
-import { mockGetPremieres, Premiere } from '../../mocks';
+import { getMoviesCollection } from '../../services/movies';
+import { Premiere } from '../../mocks';
 
 function* fetchPremieresSaga() {
   try {
-    const data: Premiere[] = yield call(mockGetPremieres);
+    const data: Premiere[] = yield call(getMoviesCollection);
     yield put(fetchPremieresSuccess(data));
   } catch (error: unknown) {
     if (error instanceof Error) {

@@ -5,7 +5,80 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import { User as UserIcon, Loader2 } from 'lucide-react';
+
+function LoginSkeleton() {
+  return (
+    <div className="relative min-h-screen w-full flex items-center justify-center p-4 overflow-hidden bg-zinc-950">
+      {/* Dynamic Background */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(37,99,235,0.1),transparent_50%)]" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-400/5 blur-[120px] rounded-full animate-pulse [animation-delay:2s]" />
+      </div>
+
+      {/* Main Container */}
+      <div className="relative z-10 w-full max-w-[480px]">
+        {/* Branding */}
+        <div className="flex flex-col items-center mb-10 space-y-4">
+          <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/20 transform rotate-12">
+            <span className="text-white font-black text-4xl">C</span>
+          </div>
+          <div className="text-center">
+            <h1 className="text-3xl font-black tracking-tighter text-white">
+              CINEPLANET
+            </h1>
+            <p className="text-zinc-500 font-medium">
+              Vive la emoción del cine
+            </p>
+          </div>
+        </div>
+
+        {/* Login Card - Skeleton */}
+        <div className="bg-zinc-900/40 backdrop-blur-2xl border border-zinc-800/50 rounded-[2.5rem] p-8 md:p-10 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.6)]">
+          <div className="space-y-8">
+            <div className="space-y-2">
+              <Skeleton className="h-8 w-40 bg-zinc-700/50" />
+              <Skeleton className="h-4 w-64 bg-zinc-700/50" />
+            </div>
+
+            {/* Google button skeleton */}
+            <Skeleton className="h-14 w-full rounded-2xl bg-zinc-700/50" />
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-zinc-800" />
+              </div>
+              <div className="relative flex justify-center text-[10px] uppercase tracking-widest">
+                <span className="bg-zinc-900/40 px-4 text-zinc-600 font-bold">
+                  O también
+                </span>
+              </div>
+            </div>
+
+            {/* Input skeleton */}
+            <div className="space-y-2">
+              <Skeleton className="h-3 w-24 bg-zinc-700/50" />
+              <Skeleton className="h-14 w-full rounded-xl bg-zinc-700/50" />
+            </div>
+
+            {/* Loader inside card */}
+            <div className="flex justify-center py-4">
+              <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+            </div>
+          </div>
+        </div>
+
+        {/* Footer info */}
+        <p className="mt-10 text-center text-zinc-600 text-xs font-medium">
+          Al continuar, aceptas nuestros términos y condiciones.
+          <br />© 2026 Cineplanet Internacional.
+        </p>
+      </div>
+    </div>
+  );
+}
 
 export default function LoginPage() {
   const {
@@ -27,7 +100,7 @@ export default function LoginPage() {
   }, [user, isGuest, authLoading, router]);
 
   if (authLoading || user || isGuest) {
-    return null;
+    return <LoginSkeleton />;
   }
 
   const handleGoogleLogin = async () => {
