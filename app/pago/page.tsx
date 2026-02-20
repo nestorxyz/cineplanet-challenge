@@ -164,8 +164,8 @@ export default function PagoPage() {
           <div className="flex justify-center">
             <CheckCircle2 className="h-24 w-24 text-green-500 animate-bounce" />
           </div>
-          <h1 className="text-4xl font-bold">¡Pago Exitoso!</h1>
-          <p className="text-muted-foreground text-lg">
+          <h1 className="text-3xl md:text-4xl font-bold">¡Pago Exitoso!</h1>
+          <p className="text-muted-foreground text-base md:text-lg">
             Tu reserva ha sido confirmada. Hemos enviado los detalles a tu
             correo.
           </p>
@@ -182,7 +182,7 @@ export default function PagoPage() {
   }
 
   return (
-    <div className="container py-12 max-w-4xl mx-auto">
+    <div className="container py-12 max-w-4xl mx-auto px-4 md:px-0">
       <Button
         variant="ghost"
         onClick={() => router.back()}
@@ -195,10 +195,10 @@ export default function PagoPage() {
         {/* Payment Form */}
         <div className="space-y-8">
           <section>
-            <h1 className="text-3xl font-bold tracking-tight mb-2">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-2">
               Finalizar Pago
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-sm md:text-base text-muted-foreground">
               Selecciona tu método de pago preferido.
             </p>
           </section>

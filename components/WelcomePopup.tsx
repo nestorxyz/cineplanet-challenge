@@ -30,15 +30,15 @@ export function WelcomePopup() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-md bg-zinc-900 border-zinc-800 text-white">
-        <DialogHeader className="flex flex-col items-center gap-4 py-4">
-          <div className="h-16 w-16 rounded-full bg-blue-600/20 flex items-center justify-center animate-bounce">
-            <Sparkles className="h-8 w-8 text-blue-500" />
+      <DialogContent className="sm:max-w-md w-[95vw] max-w-sm rounded-3xl bg-zinc-900 border-zinc-800 text-white p-6">
+        <DialogHeader className="flex flex-col items-center gap-3 py-2">
+          <div className="h-14 w-14 md:h-16 md:w-16 rounded-full bg-blue-600/20 flex items-center justify-center animate-bounce">
+            <Sparkles className="h-7 w-7 md:h-8 md:w-8 text-blue-500" />
           </div>
-          <DialogTitle className="text-2xl font-bold text-center">
+          <DialogTitle className="text-xl md:text-2xl font-bold text-center">
             ¡Bienvenido/a, {displayName}!
           </DialogTitle>
-          <p className="text-zinc-400 text-center">
+          <p className="text-zinc-400 text-center text-sm md:text-base">
             Estamos listos para que disfrutes de la mejor experiencia
             cinematográfica.
           </p>

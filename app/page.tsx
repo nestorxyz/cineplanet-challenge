@@ -27,7 +27,10 @@ export default function Home() {
   const carouselPremieres = premieres.slice(0, 4);
 
   // Clamp activeIndex when carousel has fewer items
-  const safeIndex = Math.min(activeIndex, Math.max(0, carouselPremieres.length - 1));
+  const safeIndex = Math.min(
+    activeIndex,
+    Math.max(0, carouselPremieres.length - 1),
+  );
 
   useEffect(() => {
     dispatch(fetchPremieresRequest());
@@ -107,17 +110,17 @@ export default function Home() {
               CINEPLANET{' '}
               <span className="text-sm block -mt-1 font-bold italic">CLUB</span>
             </div>
-            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white drop-shadow-md">
+            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white drop-shadow-md leading-tight">
               El Programa de beneficios que premia tu diversión.
             </h2>
             <div className="flex flex-wrap items-center gap-6">
               <Button
                 size="lg"
-                className="bg-blue-500 hover:bg-blue-400 text-white rounded-full px-8 h-12 text-lg font-bold shadow-lg transition-transform hover:scale-105"
+                className="bg-blue-500 hover:bg-blue-400 text-white rounded-full px-6 md:px-8 h-10 md:h-12 text-base md:text-lg font-bold shadow-lg transition-transform hover:scale-105"
               >
                 ¡Únete ahora!
               </Button>
-              <p className="text-blue-50 font-medium max-w-[200px] text-lg leading-tight">
+              <p className="text-blue-50 font-medium max-w-[200px] text-base md:text-lg leading-tight">
                 Descuentos, puntos, premios y más
               </p>
             </div>
@@ -128,10 +131,10 @@ export default function Home() {
       {/* Estrenos Section */}
       <section className="container mx-auto px-4 py-12 space-y-8">
         <div className="space-y-2">
-          <h2 className="text-4xl font-extrabold tracking-tight text-blue-950">
+          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-blue-950">
             Estrenos
           </h2>
-          <p className="text-lg text-muted-foreground font-medium">
+          <p className="text-base md:text-lg text-muted-foreground font-medium">
             Explora los estrenos más esperados y elige tu próxima aventura en el
             cine.
           </p>
@@ -173,8 +176,10 @@ export default function Home() {
                   </div>
                   <Button
                     size="lg"
-                    className="rounded-full px-10 h-14 text-lg font-bold bg-blue-500 hover:bg-blue-600 shadow-xl hover:shadow-blue-500/20 transition-all"
-                    onClick={() => handleAddMovieToCart(carouselPremieres[safeIndex])}
+                    className="rounded-full px-8 md:px-10 h-12 md:h-14 text-base md:text-lg font-bold bg-blue-500 hover:bg-blue-600 shadow-xl hover:shadow-blue-500/20 transition-all w-full md:w-auto"
+                    onClick={() =>
+                      handleAddMovieToCart(carouselPremieres[safeIndex])
+                    }
                   >
                     Comprar Entradas
                   </Button>

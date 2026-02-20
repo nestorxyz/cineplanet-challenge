@@ -19,8 +19,8 @@ const DULCERIA_SKELETON = (
     <div className="flex flex-col lg:flex-row gap-12">
       <div className="flex-1 space-y-8">
         <section>
-          <Skeleton className="h-10 w-48 mb-2" />
-          <div className="h-1 w-20 bg-zinc-200 rounded mb-6" />
+          <Skeleton className="h-8 md:h-10 w-40 md:w-48 mb-2" />
+          <div className="h-1 w-16 md:w-20 bg-zinc-200 rounded mb-6" />
         </section>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {Array.from({ length: 6 }).map((_, i) => (
@@ -87,10 +87,10 @@ export default function DulceriaPage() {
         {/* Product List */}
         <div className="flex-1 space-y-8">
           <section>
-            <h1 className="text-4xl font-extrabold tracking-tight mb-2 text-zinc-900 uppercase">
+            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-2 text-zinc-900 uppercase">
               Combos
             </h1>
-            <div className="h-1 w-20 bg-primary mb-6" />
+            <div className="h-1 w-16 md:w-20 bg-primary mb-6" />
           </section>
 
           {error && (
