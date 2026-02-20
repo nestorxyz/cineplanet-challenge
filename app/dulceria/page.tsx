@@ -46,7 +46,7 @@ export default function DulceriaPage() {
   }
 
   return (
-    <div className="container py-12">
+    <div className="container py-12 mx-auto">
       <div className="flex flex-col lg:flex-row gap-12">
         {/* Product List */}
         <div className="flex-1 space-y-8">
