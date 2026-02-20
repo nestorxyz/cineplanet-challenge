@@ -65,6 +65,30 @@ export const MOCK_PREMIERES: Premiere[] = [
     image:
       'https://images.unsplash.com/photo-1547891301-17482554db2a?q=80&w=600&h=900&auto=format&fit=crop', // Green/Magic theme
   },
+  {
+    id: '7',
+    title: 'Moana 2',
+    description:
+      'Moana emprende un viaje épico por el océano junto a un grupo de navegantes inesperados, descubriendo un mundo de monstruos marinos y leyendas perdidas.',
+    image:
+      'https://images.unsplash.com/photo-1505142468610-359e7d316be0?q=80&w=600&h=900&auto=format&fit=crop', // Ocean/Voyage theme
+  },
+  {
+    id: '8',
+    title: 'Red One',
+    description:
+      'Un cazador de élite y la criminal más buscada del mundo forman una alianza improbable para rescatar a una figura icónica secuestrada en Navidad.',
+    image:
+      'https://images.unsplash.com/photo-1482517967863-00000021c5ca?q=80&w=600&h=900&auto=format&fit=crop', // Action/Adventure theme
+  },
+  {
+    id: '9',
+    title: 'El Planeta de los Simios: Nuevo Reino',
+    description:
+      'Un simio joven emprende un viaje que lo llevará a cuestionar todo lo que sabe sobre el pasado y tomar decisiones que definirán el futuro.',
+    image:
+      'https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=600&h=900&auto=format&fit=crop', // Nature/Sci-fi theme
+  },
 ];
 
 export const MOCK_CANDYSTORE: CandyStoreProduct[] = [
