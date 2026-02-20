@@ -49,37 +49,40 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen items-center px-4 md:px-0">
+    <div className="flex flex-col min-h-screen">
       {/* Hero Banner Section */}
-      <section className="container py-6">
-        <div className="relative overflow-hidden rounded-2xl bg-linear-to-r from-blue-700 to-blue-900 text-white min-h-[300px] flex items-center shadow-xl">
-          <div className="absolute right-0 top-0 h-full w-full opacity-50 md:opacity-100">
-            <div className="relative h-full w-full">
-              <div className="absolute inset-0 bg-blue-900/20 z-10" />
-              <Image
-                src="/images/socio_home.png"
-                alt="Popcorn"
-                fill
-                className="object-cover object-right p-4"
-              />
-            </div>
-          </div>
-          <div className="relative z-20 p-8 md:p-12 max-w-2xl space-y-6">
-            <div className="inline-block px-4 py-2 bg-red-600 rounded-md font-black italic tracking-tighter text-xl scale-90 -rotate-2 border-2 border-white shadow-lg">
+      <section className="w-full relative overflow-hidden bg-blue-900 min-h-[350px] md:min-h-[400px] flex items-center shadow-xl">
+        {/* Full-bleed Background Image */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/images/socio_home.png"
+            alt="Cineplanet Socio"
+            fill
+            className="object-cover object-right"
+            priority
+          />
+          {/* Readability Overlay - Black gradient from left to right */}
+          <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/40 to-transparent z-10" />
+        </div>
+
+        {/* Centered Content Container */}
+        <div className="container relative z-20 mx-auto px-4 py-12 md:py-20">
+          <div className="max-w-2xl space-y-6">
+            <div className="inline-block px-4 py-2 bg-red-600 rounded-md font-black italic tracking-tighter text-xl scale-90 -rotate-2 border-2 border-white text-white shadow-lg">
               CINEPLANET{' '}
               <span className="text-sm block -mt-1 font-bold italic">CLUB</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
+            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white drop-shadow-md">
               El Programa de beneficios que premia tu diversión.
             </h2>
             <div className="flex flex-wrap items-center gap-6">
               <Button
                 size="lg"
-                className="bg-blue-500 hover:bg-blue-400 text-white rounded-full px-8 h-12 text-lg font-bold shadow-lg"
+                className="bg-blue-500 hover:bg-blue-400 text-white rounded-full px-8 h-12 text-lg font-bold shadow-lg transition-transform hover:scale-105"
               >
                 ¡Únete ahora!
               </Button>
-              <p className="text-blue-100 font-medium max-w-[200px]">
+              <p className="text-blue-50 font-medium max-w-[200px] text-lg leading-tight">
                 Descuentos, puntos, premios y más
               </p>
             </div>
@@ -88,7 +91,7 @@ export default function Home() {
       </section>
 
       {/* Estrenos Section */}
-      <section className="container py-12 space-y-8">
+      <section className="container mx-auto px-4 py-12 space-y-8">
         <div className="space-y-2">
           <h2 className="text-4xl font-extrabold tracking-tight text-blue-950">
             Estrenos

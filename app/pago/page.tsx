@@ -156,7 +156,7 @@ export default function PagoPage() {
 
   if (status === 'success') {
     return (
-      <div className="container min-h-[70vh] flex items-center justify-center py-12">
+      <div className="container mx-auto min-h-[70vh] flex items-center justify-center py-12">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
