@@ -4,6 +4,7 @@ import './globals.css';
 import { ReduxProvider } from '@/lib/store/ReduxProvider';
 import { AuthProvider } from '@/lib/AuthContext';
 import { Navbar } from '@/components/Navbar';
+import { WelcomePopup } from '@/components/WelcomePopup';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -33,6 +34,7 @@ export default function RootLayout({
         <ReduxProvider>
           <AuthProvider>
             <Navbar />
+            <WelcomePopup />
             <main>{children}</main>
           </AuthProvider>
         </ReduxProvider>
