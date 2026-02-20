@@ -11,6 +11,7 @@ export interface TicketCartItem {
   id: string;
   premiereId: string;
   title: string;
+  image?: string;
   quantity: number;
   unitPrice: number;
 }
@@ -51,6 +52,7 @@ const cartSlice = createSlice({
       action: PayloadAction<{
         premiereId: string;
         title: string;
+        image?: string;
         unitPrice?: number;
       }>,
     ) => {
@@ -58,7 +60,8 @@ const cartSlice = createSlice({
       const ticketId = `ticket-${action.payload.premiereId}`;
       const existingItem = state.items.find(
         (item) =>
-          item.type === 'ticket' && item.premiereId === action.payload.premiereId,
+          item.type === 'ticket' &&
+          item.premiereId === action.payload.premiereId,
       ) as TicketCartItem | undefined;
       if (existingItem) {
         existingItem.quantity += 1;
@@ -68,6 +71,7 @@ const cartSlice = createSlice({
           id: ticketId,
           premiereId: action.payload.premiereId,
           title: action.payload.title,
+          image: action.payload.image,
           quantity: 1,
           unitPrice,
         });

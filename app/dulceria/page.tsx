@@ -11,14 +11,7 @@ import type { CartItem } from '@/lib/store/slices/cartSlice';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  ShoppingCart,
-  Plus,
-  Minus,
-  Trash2,
-  ArrowRight,
-  ShoppingBasket,
-} from 'lucide-react';
+import { Plus, Minus, Trash2, ShoppingBasket } from 'lucide-react';
 import Image from 'next/image';
 
 export default function DulceriaPage() {
@@ -52,25 +45,25 @@ export default function DulceriaPage() {
         {/* Product List */}
         <div className="flex-1 space-y-8">
           <section>
-            <h1 className="text-4xl font-bold tracking-tight mb-2">Dulcería</h1>
-            <p className="text-muted-foreground text-lg italic">
-              ¡Acompaña tu película con los mejores combos!
-            </p>
+            <h1 className="text-4xl font-extrabold tracking-tight mb-2 text-zinc-900 uppercase">
+              Combos
+            </h1>
+            <div className="h-1 w-20 bg-primary mb-6" />
           </section>
 
           {error && (
             <div className="p-4 bg-red-50 text-red-500 rounded-lg">{error}</div>
           )}
 
-          <div className="grid sm:grid-cols-2 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {loading
-              ? Array.from({ length: 4 }).map((_, i) => (
+              ? Array.from({ length: 6 }).map((_, i) => (
                   <Card
                     key={i}
-                    className="overflow-hidden border-none shadow-md"
+                    className="overflow-hidden border-none shadow-sm animate-pulse"
                   >
-                    <Skeleton className="h-48 w-full" />
-                    <CardContent className="p-6 space-y-4">
+                    <Skeleton className="h-56 w-full" />
+                    <CardContent className="p-4 space-y-3">
                       <Skeleton className="h-6 w-2/3" />
                       <Skeleton className="h-4 w-full" />
                       <Skeleton className="h-10 w-full" />
@@ -80,36 +73,40 @@ export default function DulceriaPage() {
               : products.map((product) => (
                   <Card
                     key={product.id}
-                    className="overflow-hidden group hover:shadow-xl transition-all duration-300 border-none bg-zinc-50/50 flex flex-col"
+                    className="overflow-hidden pt-0 group hover:shadow-2xl transition-all duration-500 border-none bg-white flex flex-col rounded-3xl"
                   >
-                    <div className="relative h-48 w-full overflow-hidden">
+                    <div className="relative h-64 w-full overflow-hidden">
                       <Image
                         src={product.image}
                         alt={product.name}
                         fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="object-cover group-hover:scale-105 transition-transform duration-700"
                       />
-                      <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
-                    <CardContent className="p-6 flex flex-col flex-1 gap-4">
-                      <div className="space-y-1">
-                        <h3 className="text-xl font-bold text-primary">
+                    <CardContent className="flex flex-col flex-1 gap-4">
+                      <div className="space-y-2">
+                        <h3 className="text-lg font-black text-zinc-900 uppercase tracking-tight leading-tight">
                           {product.name}
                         </h3>
-                        <p className="text-muted-foreground text-sm leading-relaxed">
-                          {product.description}
+                        <p className="text-muted-foreground text-xs leading-relaxed line-clamp-2">
+                          Detalle: {product.description}
                         </p>
                       </div>
-                      <div className="mt-auto flex items-center justify-between">
-                        <span className="text-2xl font-black text-blue-600">
-                          S/ {product.price.toFixed(2)}
-                        </span>
+                      <div className="mt-auto pt-4 border-t border-zinc-100 flex items-center justify-between">
+                        <div className="flex flex-col">
+                          <span className="text-xs text-muted-foreground line-through opacity-50">
+                            S/ {(product.price * 1.2).toFixed(2)}
+                          </span>
+                          <span className="text-xl font-black text-zinc-900">
+                            S/ {product.price.toFixed(2)}
+                          </span>
+                        </div>
                         <Button
                           onClick={() => dispatch(addItem(product))}
-                          size="sm"
-                          className="rounded-full px-4 shadow-md hover:shadow-blue-500/20 active:scale-95 transition-all"
+                          size="icon"
+                          className="rounded-xl h-10 w-10 bg-zinc-100 text-zinc-900 hover:bg-primary hover:text-white transition-all shadow-sm active:scale-95"
                         >
-                          <Plus className="mr-2 h-4 w-4" /> Agregar
+                          <Plus className="h-5 w-5" />
                         </Button>
                       </div>
                     </CardContent>
@@ -118,110 +115,132 @@ export default function DulceriaPage() {
           </div>
         </div>
 
-        {/* Cart Sidebar */}
-        <aside className="w-full lg:w-96">
-          <Card className="sticky top-28 border-2 border-zinc-100 shadow-2xl rounded-2xl overflow-hidden">
-            <div className="bg-primary p-6 text-white flex items-center gap-3">
-              <ShoppingCart className="h-6 w-6" />
-              <h2 className="text-xl font-bold">Tu Pedido</h2>
+        {/* Cart Sidebar - "RESUMEN" */}
+        <aside className="w-full lg:w-[400px]">
+          <div className="sticky top-28 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-3xl overflow-hidden border border-zinc-100">
+            <div className="p-8 pb-4">
+              <h2 className="text-3xl font-black text-zinc-900 uppercase tracking-tighter italic">
+                Resumen
+              </h2>
             </div>
+
             <CardContent className="p-0">
-              <div className="max-h-[50vh] overflow-y-auto px-6 py-4 space-y-4">
-                {cart.items.length === 0 ? (
-                  <div className="py-12 text-center space-y-4">
-                    <div className="h-20 w-20 bg-zinc-100 rounded-full flex items-center justify-center mx-auto">
-                      <ShoppingBasket className="h-10 w-10 text-zinc-300" />
-                    </div>
-                    <p className="text-muted-foreground italic">
-                      El carrito está vacío
-                    </p>
+              <div className="px-8 space-y-8">
+                {/* Items Section */}
+                <div className="space-y-6">
+                  <span className="text-sm font-medium text-zinc-500 block">
+                    Alimentos y Bebidas
+                  </span>
+
+                  <div className="space-y-6 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
+                    {cart.items.length === 0 ? (
+                      <div className="py-8 text-center bg-zinc-50 rounded-3xl border-2 border-dashed border-zinc-100">
+                        <p className="text-zinc-400 text-sm font-medium italic">
+                          Agrega productos a tu pedido
+                        </p>
+                      </div>
+                    ) : (
+                      cart.items.map((item: CartItem) => (
+                        <div
+                          key={item.id}
+                          className="flex gap-4 group animate-in fade-in slide-in-from-right-4 duration-300"
+                        >
+                          <div className="relative h-16 w-16 shrink-0 rounded-2xl overflow-hidden border border-zinc-100 shadow-sm">
+                            <Image
+                              src={
+                                item.type === 'candy'
+                                  ? item.image
+                                  : item.image ||
+                                    'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=300'
+                              }
+                              alt={
+                                item.type === 'candy' ? item.name : item.title
+                              }
+                              fill
+                              className="object-cover"
+                            />
+                            <div className="absolute inset-0 bg-black/5" />
+                          </div>
+
+                          <div className="flex-1 min-w-0 flex flex-col justify-center">
+                            <h4 className="font-black text-sm text-zinc-900 uppercase tracking-tight line-clamp-1">
+                              {item.quantity} ·{' '}
+                              {item.type === 'candy'
+                                ? `*${item.name}`
+                                : item.title}
+                            </h4>
+                            <p className="text-xs font-bold text-zinc-500">
+                              S/{' '}
+                              {item.type === 'candy'
+                                ? item.price.toFixed(2)
+                                : item.unitPrice.toFixed(2)}
+                              {item.type === 'ticket' && (
+                                <span className="ml-1 opacity-60 font-normal">
+                                  (Entrada)
+                                </span>
+                              )}
+                            </p>
+                          </div>
+
+                          <div className="flex flex-col items-center justify-center bg-zinc-50 rounded-2xl px-2 py-1 gap-2 border border-zinc-100 opacity-80 group-hover:opacity-100 transition-opacity">
+                            <button
+                              onClick={() =>
+                                item.type === 'candy'
+                                  ? dispatch(addItem(item))
+                                  : dispatch(
+                                      addTicket({
+                                        premiereId: item.premiereId,
+                                        title: item.title,
+                                        image: item.image,
+                                        unitPrice: item.unitPrice,
+                                      }),
+                                    )
+                              }
+                              className="hover:text-primary transition-colors p-1"
+                            >
+                              <Plus className="h-3.5 w-3.5" />
+                            </button>
+                            <button
+                              onClick={() => dispatch(removeItem(item.id))}
+                              className="hover:text-red-500 transition-colors p-1"
+                            >
+                              {item.quantity === 1 ? (
+                                <Trash2 className="h-3.5 w-3.5" />
+                              ) : (
+                                <Minus className="h-3.5 w-3.5" />
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </div>
-                ) : (
-                  cart.items.map((item: CartItem) => (
-                    <div
-                      key={item.id}
-                      className="flex items-center gap-4 py-2 border-b border-zinc-100 last:border-0"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <p className="font-bold truncate text-zinc-800">
-                          {item.type === 'candy'
-                            ? item.name
-                            : `Entrada - ${item.title}`}
-                        </p>
-                        <p className="text-sm text-blue-600 font-semibold">
-                          S/{' '}
-                          {item.type === 'candy'
-                            ? item.price.toFixed(2)
-                            : item.unitPrice.toFixed(2)}{' '}
-                          {item.type === 'ticket' && (
-                            <span className="text-muted-foreground font-normal">
-                              (por asiento)
-                            </span>
-                          )}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-3 bg-zinc-100 rounded-full px-3 py-1">
-                        <button
-                          onClick={() => dispatch(removeItem(item.id))}
-                          className="hover:text-red-600 transition-colors"
-                        >
-                          {item.quantity === 1 ? (
-                            <Trash2 className="h-4 w-4" />
-                          ) : (
-                            <Minus className="h-4 w-4" />
-                          )}
-                        </button>
-                        <span className="font-bold w-4 text-center">
-                          {item.quantity}
-                        </span>
-                        <button
-                          onClick={() =>
-                            item.type === 'candy'
-                              ? dispatch(
-                                  addItem({
-                                    id: item.id,
-                                    name: item.name,
-                                    description: item.description,
-                                    price: item.price,
-                                    image: item.image,
-                                  }),
-                                )
-                              : dispatch(
-                                  addTicket({
-                                    premiereId: item.premiereId,
-                                    title: item.title,
-                                    unitPrice: item.unitPrice,
-                                  }),
-                                )
-                          }
-                          className="hover:text-blue-600 transition-colors"
-                        >
-                          <Plus className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                )}
+                </div>
               </div>
 
-              <div className="p-6 bg-zinc-50 border-t border-zinc-100 space-y-6">
-                <div className="flex items-center justify-between text-xl font-black">
-                  <span>Total</span>
-                  <span className="text-primary">
-                    S/ {cart.total.toFixed(2)}
-                  </span>
+              <div className="mt-8 p-8 bg-zinc-950 text-white space-y-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <ShoppingBasket className="h-5 w-5 text-zinc-400" />
+                    <span className="text-xl font-black">
+                      S/{' '}
+                      {(cart.total + (cart.items.length > 0 ? 1 : 0)).toFixed(
+                        2,
+                      )}
+                    </span>
+                  </div>
+                  <Button
+                    disabled={cart.items.length === 0}
+                    variant="ghost"
+                    className="h-12 px-8 text-sm font-black uppercase tracking-widest hover:bg-white/10 hover:text-white transition-all group"
+                    onClick={() => router.push('/pago')}
+                  >
+                    Continuar
+                  </Button>
                 </div>
-                <Button
-                  disabled={cart.items.length === 0}
-                  className="w-full h-14 text-lg font-bold rounded-xl shadow-xl hover:shadow-blue-500/30 transition-all group"
-                  onClick={() => router.push('/pago')}
-                >
-                  Continuar al Pago
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
               </div>
             </CardContent>
-          </Card>
+          </div>
         </aside>
       </div>
     </div>

@@ -27,11 +27,13 @@ export default function Home() {
   const handleAddMovieToCart = (premiere: {
     id: string;
     title: string;
+    image: string;
   }) => {
     dispatch(
       addTicket({
         premiereId: premiere.id,
         title: premiere.title,
+        image: premiere.image,
         unitPrice: TICKET_PRICE_PEN,
       }),
     );
