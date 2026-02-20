@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import { Inter, Montserrat } from 'next/font/google';
 import './globals.css';
+import { ReduxProvider } from '@/lib/store/ReduxProvider';
+import { AuthProvider } from '@/lib/AuthContext';
+import { Navbar } from '@/components/Navbar';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -28,7 +31,10 @@ export default function RootLayout({
         className={`${inter.variable} ${montserrat.variable} antialiased font-sans`}
       >
         <ReduxProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <Navbar />
+            <main>{children}</main>
+          </AuthProvider>
         </ReduxProvider>
       </body>
     </html>

@@ -1,4 +1,4 @@
-import { all, takeLatest, put, call } from 'redux-saga/effects';
+import { takeLatest, put, call } from 'redux-saga/effects';
 import {
   fetchPremieresRequest,
   fetchPremieresSuccess,
@@ -10,8 +10,10 @@ function* fetchPremieresSaga() {
   try {
     const data: Premiere[] = yield call(mockGetPremieres);
     yield put(fetchPremieresSuccess(data));
-  } catch (error: any) {
-    yield put(fetchPremieresFailure(error.message));
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      yield put(fetchPremieresFailure(error.message));
+    }
   }
 }
 

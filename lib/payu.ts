@@ -1,11 +1,14 @@
 import md5 from 'md5';
 
-// PayU Sandbox Credentials (Standard)
+// PayU Sandbox Credentials (Standard Latam)
 const PAYU_CONFIG = {
-  MERCHANT_ID: '508029',
-  API_KEY: '4Vj8eK4rph97Od2p6S91E5s9n-', // DO NOT USE IN PRODUCTION
-  ACCOUNT_ID: '512321',
-  API_URL: 'https://sandbox.api.payulatam.com/payments-api/4.0/service.cgi',
+  MERCHANT_ID: process.env.NEXT_PUBLIC_PAYU_MERCHANT_ID || '508029',
+  API_KEY: process.env.NEXT_PUBLIC_PAYU_API_KEY || '4Vj8eK4rloUd272L48hsrarnUA',
+  ACCOUNT_ID: process.env.NEXT_PUBLIC_PAYU_ACCOUNT_ID || '512323',
+  API_LOGIN: process.env.NEXT_PUBLIC_PAYU_API_LOGIN || 'pRRXKOl8ikMmt9u',
+  API_URL:
+    process.env.NEXT_PUBLIC_PAYU_API_URL ||
+    'https://sandbox.api.payulatam.com/payments-api/4.0/service.cgi',
 };
 
 /**
@@ -21,7 +24,48 @@ export const generatePayUSignature = (
   return md5(rawSignature);
 };
 
-export const payuRequest = async (data: any) => {
+export interface PayUTransaction {
+  order: {
+    accountId: string;
+    referenceCode: string;
+    description: string;
+    language: string;
+    signature: string;
+    additionalValues: {
+      TX_VALUE: {
+        value: number;
+        currency: string;
+      };
+    };
+    buyer?: {
+      fullName: string;
+      emailAddress: string;
+      contactPhone: string;
+    };
+  };
+  payer: {
+    fullName: string;
+    emailAddress: string;
+    contactPhone: string;
+    dniNumber: string;
+  };
+  creditCard?: {
+    number: string;
+    securityCode: string;
+    expirationDate: string; // YYYY/MM
+    name: string;
+  };
+  extraParameters?: Record<string, unknown>;
+  type: 'AUTHORIZATION_AND_CAPTURE' | 'AUTHORIZATION' | 'CAPTURE';
+  paymentMethod: string;
+  paymentCountry: 'PE' | 'CO' | 'MX' | 'CL' | 'AR' | 'BR' | 'PA';
+  deviceSessionId?: string;
+  ipAddress: string;
+  cookie?: string;
+  userAgent?: string;
+}
+
+export const payuRequest = async (data: PayUTransaction) => {
   const response = await fetch(PAYU_CONFIG.API_URL, {
     method: 'POST',
     headers: {
@@ -33,7 +77,7 @@ export const payuRequest = async (data: any) => {
       command: 'SUBMIT_TRANSACTION',
       merchant: {
         apiKey: PAYU_CONFIG.API_KEY,
-        apiLogin: 'pRRXKOFm8tfGsc7', // Standard sandbox login
+        apiLogin: PAYU_CONFIG.API_LOGIN,
       },
       transaction: data,
       test: true,

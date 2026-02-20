@@ -73,7 +73,7 @@ export const mockGetCandyStore = async () => {
   });
 };
 
-export const mockCompleteTransaction = async (data: any) => {
+export const mockCompleteTransaction = async (data: { success: boolean }) => {
   console.log('Completing transaction with data:', data);
   return new Promise<{ responseCode: string }>((resolve) => {
     setTimeout(() => resolve({ responseCode: '0' }), 1000);
