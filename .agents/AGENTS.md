@@ -13,7 +13,7 @@ A cinema e-commerce application built for the Cineplanet technical challenge. It
 - **State Management**: Redux Toolkit + Redux Saga
 - **UI & Styling**: Tailwind CSS 4, shadcn/ui, Lucide Icons
 - **Authentication**: Firebase Auth (Google Sign-In)
-- **Payment**: PayU Latam API (Sandbox mode for Peru)
+- **Payment**: PayU Latam API (Sandbox mode for Peru) including Credit Cards and **Yape**.
 - **Validation**: Zod + @t3-oss/env-nextjs (for environment safety)
 
 ## 📂 Key File Map
@@ -53,7 +53,9 @@ Managed via `.env.local`. See `.env.local.example` for the required structure.
 
 - Use `generatePayUSignature` from `lib/payu.ts` to sign requests.
 - Transaction currency must be **PEN**.
-- Refer to `README.md` for test card numbers and status simulation (APPROVED/REJECTED).
+- **Credit Cards (Peru)**: Require `extraParameters.INSTALLMENTS_NUMBER` (must be >= 1).
+- **Yape**: Requires `extraParameters.OTP` (6 bits) and `paymentMethod: 'YAPE'`.
+- Refer to `README.md` for test card numbers, Yape OTP, and status simulation.
 
 ### Data Mocking
 

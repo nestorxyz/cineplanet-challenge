@@ -22,10 +22,10 @@ export default function LoginPage() {
   const [guestName, setGuestName] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // If already logged in, redirect to home
+  // If already logged in, redirect to dulceria
   useEffect(() => {
     if (!authLoading && (user || isGuest)) {
-      router.push('/');
+      router.push('/dulceria');
     }
   }, [user, isGuest, authLoading, router]);
 
@@ -37,14 +37,14 @@ export default function LoginPage() {
     setLoading(true);
     await signInWithGoogle();
     setLoading(false);
-    router.push('/');
+    router.push('/dulceria');
   };
 
   const handleGuestLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (!guestName.trim()) return;
     signInAsGuest(guestName);
-    router.push('/');
+    router.push('/dulceria');
   };
 
   return (
@@ -64,7 +64,7 @@ export default function LoginPage() {
       {/* Login Card */}
       <Card className="relative z-10 w-full max-w-md bg-zinc-900/80 border-zinc-800 text-white backdrop-blur-md shadow-2xl">
         <CardHeader className="space-y-1 pb-8 pt-8">
-          <CardTitle className="text-3xl font-bold tracking-tight text-center bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+          <CardTitle className="text-3xl font-bold tracking-tight text-center bg-linear-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
             Bienvenido a Cineplanet
           </CardTitle>
           <p className="text-center text-zinc-400 text-sm">

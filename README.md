@@ -17,12 +17,30 @@ Use the following data to test the payment flow.
 | **AMEX**              | `3777530000000009`                       |
 | **DINERS**            | `3623920000000000`                       |
 
-### Simulating Transaction Status
+### Yape (Peru)
+
+| Type     | Test Phone  | OTP (Code) | Note                     |
+| :------- | :---------- | :--------- | :----------------------- |
+| **Yape** | `969929157` | `557454`   | Approval Code in Sandbox |
+
+### Simulating Transaction Status (Cards)
 
 | Status       | Requirement                                                                  |
 | :----------- | :--------------------------------------------------------------------------- |
 | **APPROVED** | Card Name must contain `APPROVED`, CVV: `777` (AMEX `7777`), Exp. Month < 6. |
 | **REJECTED** | Card Name must contain `REJECTED`, CVV: `666` (AMEX `6666`), Exp. Month > 6. |
+
+---
+
+## Technical Context (PayU Integration)
+
+### Mandatory Parameters for Peru
+
+When processing credit card payments in Peru, the `extraParameters` field MUST include `INSTALLMENTS_NUMBER`. Failure to include this will result in a **500 Internal Server Error** from the PayU API.
+
+### Yape Implementation
+
+Yape payments require the `OTP` parameter within `extraParameters` and the transaction type set to `AUTHORIZATION_AND_CAPTURE`.
 
 ---
 
