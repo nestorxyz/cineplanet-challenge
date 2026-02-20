@@ -30,7 +30,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen items-center">
+    <div className="flex flex-col min-h-screen items-center px-4 md:px-0">
       {/* Hero Banner Section */}
       <section className="container py-6">
         <div className="relative overflow-hidden rounded-2xl bg-linear-to-r from-blue-700 to-blue-900 text-white min-h-[300px] flex items-center shadow-xl">
@@ -93,7 +93,7 @@ export default function Home() {
           <div className="space-y-12">
             {/* Featured Premiere */}
             {premieres.length > 0 && (
-              <div className="relative flex flex-col md:flex-row gap-8 items-center bg-white rounded-3xl p-6 md:p-0 overflow-hidden">
+              <div className="relative flex flex-col md:flex-row gap-8 items-center bg-[#F7F7F7] rounded-3xl p-6 md:p-0 overflow-hidden">
                 <div className="relative w-full md:w-[350px] aspect-2/3 shrink-0 rounded-2xl md:rounded-l-3xl md:rounded-r-none overflow-hidden group">
                   <Image
                     src={premieres[0].image}
