@@ -14,6 +14,48 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Plus, Minus, Trash2, ShoppingBasket } from 'lucide-react';
 import Image from 'next/image';
 
+const DULCERIA_SKELETON = (
+  <div className="container py-12 mx-auto px-4 md:px-0 min-h-[calc(100vh-4rem)]">
+    <div className="flex flex-col lg:flex-row gap-12">
+      <div className="flex-1 space-y-8">
+        <section>
+          <Skeleton className="h-10 w-48 mb-2" />
+          <div className="h-1 w-20 bg-zinc-200 rounded mb-6" />
+        </section>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Card
+              key={i}
+              className="overflow-hidden border-none shadow-sm animate-pulse"
+            >
+              <Skeleton className="h-56 w-full" />
+              <CardContent className="p-4 space-y-3">
+                <Skeleton className="h-6 w-2/3" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-10 w-full" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+      <aside className="w-full lg:w-[400px]">
+        <div className="sticky top-28 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-3xl overflow-hidden border border-zinc-100 p-8">
+          <Skeleton className="h-9 w-32 mb-6" />
+          <div className="space-y-4">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-24 w-full rounded-2xl" />
+            <Skeleton className="h-24 w-full rounded-2xl" />
+          </div>
+          <div className="mt-8 p-6 bg-zinc-100 rounded-2xl space-y-4">
+            <Skeleton className="h-6 w-full" />
+            <Skeleton className="h-12 w-full rounded-xl" />
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+);
+
 export default function DulceriaPage() {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -36,7 +78,7 @@ export default function DulceriaPage() {
   }, [dispatch]);
 
   if (authLoading || (!user && !isGuest)) {
-    return null;
+    return DULCERIA_SKELETON;
   }
 
   return (
@@ -103,10 +145,10 @@ export default function DulceriaPage() {
                         </div>
                         <Button
                           onClick={() => dispatch(addItem(product))}
-                          size="icon"
-                          className="rounded-xl h-10 w-10 bg-zinc-100 text-zinc-900 hover:bg-primary hover:text-white transition-all shadow-sm active:scale-95"
+                          size="sm"
+                          className="rounded-xl px-4 bg-zinc-100 text-zinc-900 hover:bg-primary hover:text-white transition-all shadow-sm active:scale-95 text-xs font-bold"
                         >
-                          <Plus className="h-5 w-5" />
+                          Agregar
                         </Button>
                       </div>
                     </CardContent>
@@ -128,66 +170,84 @@ export default function DulceriaPage() {
               <div className="px-8 space-y-8">
                 {/* Items Section */}
                 <div className="space-y-6">
-                  <span className="text-sm font-medium text-zinc-500 block">
-                    Alimentos y Bebidas
-                  </span>
+                  <div className="space-y-8 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
+                    {/* Entradas Section */}
+                    <div className="space-y-4">
+                      <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest block">
+                        Entradas
+                      </span>
 
-                  <div className="space-y-6 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
-                    {cart.items.length === 0 ? (
-                      <div className="py-8 text-center bg-zinc-50 rounded-3xl border-2 border-dashed border-zinc-100">
-                        <p className="text-zinc-400 text-sm font-medium italic">
-                          Agrega productos a tu pedido
-                        </p>
-                      </div>
-                    ) : (
-                      cart.items.map((item: CartItem) => (
-                        <div
-                          key={item.id}
-                          className="flex gap-4 group animate-in fade-in slide-in-from-right-4 duration-300"
-                        >
-                          <div className="relative h-16 w-16 shrink-0 rounded-2xl overflow-hidden border border-zinc-100 shadow-sm">
-                            <Image
-                              src={
-                                item.type === 'candy'
-                                  ? item.image
-                                  : item.image ||
-                                    'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=300'
-                              }
-                              alt={
-                                item.type === 'candy' ? item.name : item.title
-                              }
-                              fill
-                              className="object-cover"
-                            />
-                            <div className="absolute inset-0 bg-black/5" />
-                          </div>
+                      {cart.items.filter((i) => i.type === 'ticket').length ===
+                      0 ? (
+                        <div className="p-6 text-center bg-zinc-50 rounded-2xl border border-zinc-100 flex flex-col gap-3">
+                          <p className="text-zinc-500 text-xs font-medium italic leading-relaxed">
+                            ¡Aún no tienes entradas! Ve a Ver Películas para
+                            elegir tu función favorita
+                          </p>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-[10px] font-black uppercase tracking-widest h-8 rounded-xl border-zinc-200 hover:bg-zinc-100"
+                            onClick={() => router.push('/')}
+                          >
+                            Ver Películas
+                          </Button>
+                        </div>
+                      ) : (
+                        cart.items
+                          .filter((i) => i.type === 'ticket')
+                          .map((item: CartItem) => (
+                            <div
+                              key={item.id}
+                              className="flex gap-4 group animate-in fade-in slide-in-from-right-4 duration-300 items-center"
+                            >
+                              <div className="relative h-14 w-14 shrink-0 rounded-xl overflow-hidden border border-zinc-100 shadow-sm">
+                                <Image
+                                  src={
+                                    item.type === 'ticket'
+                                      ? item.image ||
+                                        'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=300'
+                                      : ''
+                                  }
+                                  alt={item.type === 'ticket' ? item.title : ''}
+                                  fill
+                                  className="object-cover"
+                                />
+                              </div>
 
-                          <div className="flex-1 min-w-0 flex flex-col justify-center">
-                            <h4 className="font-black text-sm text-zinc-900 uppercase tracking-tight line-clamp-1">
-                              {item.quantity} ·{' '}
-                              {item.type === 'candy'
-                                ? `*${item.name}`
-                                : item.title}
-                            </h4>
-                            <p className="text-xs font-bold text-zinc-500">
-                              S/{' '}
-                              {item.type === 'candy'
-                                ? item.price.toFixed(2)
-                                : item.unitPrice.toFixed(2)}
-                              {item.type === 'ticket' && (
-                                <span className="ml-1 opacity-60 font-normal">
-                                  (Entrada)
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-black text-[11px] text-zinc-900 uppercase tracking-tight line-clamp-1">
+                                  {item.type === 'ticket' ? item.title : ''}
+                                </h4>
+                                <p className="text-[10px] font-bold text-zinc-500">
+                                  S/{' '}
+                                  {item.type === 'ticket'
+                                    ? item.unitPrice.toFixed(2)
+                                    : ''}
+                                  <span className="ml-1 opacity-60 font-normal text-[8px]">
+                                    (Entrada)
+                                  </span>
+                                </p>
+                              </div>
+
+                              <div className="flex items-center bg-zinc-50 rounded-xl px-2 py-1 gap-2 border border-zinc-100">
+                                <button
+                                  onClick={() => dispatch(removeItem(item.id))}
+                                  className="text-zinc-400 hover:text-red-500 transition-colors p-1"
+                                >
+                                  {item.quantity === 1 ? (
+                                    <Trash2 className="h-3 w-3" />
+                                  ) : (
+                                    <Minus className="h-3 w-3" />
+                                  )}
+                                </button>
+                                <span className="text-[11px] font-black text-zinc-900 min-w-4 text-center">
+                                  {item.quantity}
                                 </span>
-                              )}
-                            </p>
-                          </div>
-
-                          <div className="flex flex-col items-center justify-center bg-zinc-50 rounded-2xl px-2 py-1 gap-2 border border-zinc-100 opacity-80 group-hover:opacity-100 transition-opacity">
-                            <button
-                              onClick={() =>
-                                item.type === 'candy'
-                                  ? dispatch(addItem(item))
-                                  : dispatch(
+                                <button
+                                  onClick={() =>
+                                    item.type === 'ticket' &&
+                                    dispatch(
                                       addTicket({
                                         premiereId: item.premiereId,
                                         title: item.title,
@@ -195,33 +255,99 @@ export default function DulceriaPage() {
                                         unitPrice: item.unitPrice,
                                       }),
                                     )
-                              }
-                              className="hover:text-primary transition-colors p-1"
-                            >
-                              <Plus className="h-3.5 w-3.5" />
-                            </button>
-                            <button
-                              onClick={() => dispatch(removeItem(item.id))}
-                              className="hover:text-red-500 transition-colors p-1"
-                            >
-                              {item.quantity === 1 ? (
-                                <Trash2 className="h-3.5 w-3.5" />
-                              ) : (
-                                <Minus className="h-3.5 w-3.5" />
-                              )}
-                            </button>
-                          </div>
+                                  }
+                                  className="text-zinc-400 hover:text-primary transition-colors p-1"
+                                >
+                                  <Plus className="h-3 w-3" />
+                                </button>
+                              </div>
+                            </div>
+                          ))
+                      )}
+                    </div>
+
+                    {/* Food section */}
+                    <div className="space-y-4">
+                      <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest block">
+                        Alimentos y Bebidas
+                      </span>
+
+                      {cart.items.filter((i) => i.type === 'candy').length ===
+                      0 ? (
+                        <div className="p-6 text-center bg-zinc-50 rounded-2xl border border-dashed border-zinc-100">
+                          <p className="text-zinc-400 text-[10px] font-medium italic">
+                            Agrega productos a tu pedido
+                          </p>
                         </div>
-                      ))
-                    )}
+                      ) : (
+                        cart.items
+                          .filter((i) => i.type === 'candy')
+                          .map((item: CartItem) => (
+                            <div
+                              key={item.id}
+                              className="flex gap-4 group animate-in fade-in slide-in-from-right-4 duration-300 items-center"
+                            >
+                              <div className="relative h-14 w-14 shrink-0 rounded-xl overflow-hidden border border-zinc-100 shadow-sm">
+                                <Image
+                                  src={item.type === 'candy' ? item.image : ''}
+                                  alt={item.type === 'candy' ? item.name : ''}
+                                  fill
+                                  className="object-cover"
+                                />
+                              </div>
+
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-black text-[11px] text-zinc-900 uppercase tracking-tight line-clamp-1">
+                                  {item.type === 'candy' ? `${item.name}` : ''}
+                                </h4>
+                                <p className="text-[10px] font-bold text-zinc-500">
+                                  S/{' '}
+                                  {item.type === 'candy'
+                                    ? item.price.toFixed(2)
+                                    : ''}
+                                </p>
+                              </div>
+
+                              <div className="flex items-center bg-zinc-50 rounded-xl px-2 py-1 gap-2 border border-zinc-100">
+                                <button
+                                  onClick={() => dispatch(removeItem(item.id))}
+                                  className="text-zinc-400 hover:text-red-500 transition-colors p-1"
+                                >
+                                  {item.quantity === 1 ? (
+                                    <Trash2 className="h-3 w-3" />
+                                  ) : (
+                                    <Minus className="h-3 w-3" />
+                                  )}
+                                </button>
+                                <span className="text-[11px] font-black text-zinc-900 min-w-4 text-center">
+                                  {item.quantity}
+                                </span>
+                                <button
+                                  onClick={() =>
+                                    item.type === 'candy' &&
+                                    dispatch(addItem(item))
+                                  }
+                                  className="text-zinc-400 hover:text-primary transition-colors p-1"
+                                >
+                                  <Plus className="h-3 w-3" />
+                                </button>
+                              </div>
+                            </div>
+                          ))
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-8 p-8 bg-zinc-950 text-white space-y-6">
+              <button
+                disabled={cart.items.length === 0}
+                onClick={() => router.push('/pago')}
+                className="w-full mt-8 p-8 bg-zinc-950 text-white space-y-6 hover:bg-zinc-900 transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed group text-left"
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <ShoppingBasket className="h-5 w-5 text-zinc-400" />
+                    <ShoppingBasket className="h-5 w-5 text-zinc-400 group-hover:text-primary transition-colors" />
                     <span className="text-xl font-black">
                       S/{' '}
                       {(cart.total + (cart.items.length > 0 ? 1 : 0)).toFixed(
@@ -229,16 +355,11 @@ export default function DulceriaPage() {
                       )}
                     </span>
                   </div>
-                  <Button
-                    disabled={cart.items.length === 0}
-                    variant="ghost"
-                    className="h-12 px-8 text-sm font-black uppercase tracking-widest hover:bg-white/10 hover:text-white transition-all group"
-                    onClick={() => router.push('/pago')}
-                  >
+                  <div className="h-12 px-8 text-sm font-black uppercase tracking-widest flex items-center group-hover:translate-x-1 transition-transform">
                     Continuar
-                  </Button>
+                  </div>
                 </div>
-              </div>
+              </button>
             </CardContent>
           </div>
         </aside>
